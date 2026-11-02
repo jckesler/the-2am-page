@@ -27,6 +27,21 @@
   --good:#6fcf97; --good-soft:#18301f; --shadow:none; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0}
+.tl{border-top:1px solid var(--line);background:var(--bg);padding:12px 22px 14px}
+.tl .eyebrow{display:block;margin-bottom:8px}
+.tl-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(34px,1fr);list-style:none;margin:0;padding:0}
+.tl-pt{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--f-mono);font-size:11px;line-height:15px;color:var(--muted);text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tl-day{height:15px;font-weight:600;color:var(--ink)}
+.tl-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--line);background:var(--panel);position:relative;z-index:1}
+.tl-pt::before,.tl-pt::after{content:"";position:absolute;top:24px;width:50%;border-top:2px solid var(--line)}
+.tl-pt::before{left:0}.tl-pt::after{right:0}
+.tl-pt:first-child::before,.tl-pt:last-child::after{display:none}
+.tl-pt.jump::before{border-top-style:dashed}
+.tl-pt.done::before,.tl-pt.done::after,.tl-pt.now::before{border-top-color:var(--ink)}
+.tl-pt.done .tl-dot{background:var(--ink);border-color:var(--ink)}
+.tl-pt.now .tl-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft)}
+.tl-pt.now .tl-rel{color:var(--red);font-weight:600}
+@media (max-width:480px){.tl{padding:12px 12px 14px}.tl-pt{font-size:10px}}
 .credit{margin-top:32px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 .credit a{color:inherit}
 .wrap{max-width:1120px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -496,13 +511,38 @@ function rail(){
 }
 function shortOf(t){ var s = t.split(/[.:;]/)[0]; return s.length>70 ? s.slice(0,68)+'…' : s; }
 
+/* Timeline strip at the bottom of each scene: elapsed time since the page, with day changes. */
+function timeline(){
+  var D = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], base = null, prev = -1, add = 0, lastDay = '', lastRel = '';
+  var h = '<div class="tl"><span class="eyebrow">Incident timeline</span><ol class="tl-track">';
+  sc.steps.forEach(function(s,i){
+    var c = val(s.clock), m = /^(\w{3}) (\d\d):(\d\d)$/.exec(c), day = '', rel, jump = false;
+    if(m){
+      var abs = D.indexOf(m[1])*1440 + (+m[2])*60 + (+m[3]) + add;
+      if(prev >= 0 && abs < prev){ add += 7*1440; abs += 7*1440; }
+      prev = abs; if(base === null) base = abs;
+      var e = abs - base;
+      rel = e === 0 ? 'Start' : e < 60 ? '+'+e+'m' : e < 72*60 ? '+'+Math.round(e/60)+'h' : '+'+Math.round(e/1440)+'d';
+      if(rel === lastRel){ var hh = Math.round(e/60); rel = '+'+Math.floor(hh/24)+'d'+(hh%24)+'h'; }
+      lastRel = rel;
+      if(m[1] !== lastDay){ day = m[1]; lastDay = m[1]; }
+    } else {
+      rel = c.replace(/ weeks?$/,' wk').replace(/ months?$/,' mo'); jump = true;
+      if(lastDay !== 'Later'){ day = 'Later'; lastDay = 'Later'; }
+    }
+    var cls = i < si ? 'done' : i === si ? 'now' : 'next';
+    var said = (cls==='done'?'done':cls==='now'?'current decision':'ahead');
+    h += '<li class="tl-pt '+cls+(jump?' jump':'')+'" aria-label="Decision '+(i+1)+', '+esc(c)+', '+said+'"'+(cls==='now'?' aria-current="step"':'')+'><span class="tl-day" aria-hidden="true">'+esc(day)+'</span><span class="tl-dot" aria-hidden="true"></span><span class="tl-rel" aria-hidden="true">'+esc(rel)+'</span></li>';
+  });
+  return h + '</ol></div>';
+}
 function scene(){
   var step = sc.steps[si];
   var h = '<div class="game"><section class="scene"><div class="scene-head"><span class="clock">'+esc(val(step.clock))+'</span><span class="step">Decision '+(si+1)+' of '+sc.steps.length+'</span></div><div class="scene-body"><h2>'+esc(step.title)+'</h2>'+val(step.text)+'<div class="choices">';
   var order = step.choices.map(function(_,j){return j;});
   for(var q=order.length-1;q>0;q--){var w=Math.floor(Math.random()*(q+1)),tq=order[q];order[q]=order[w];order[w]=tq;}
   order.forEach(function(j,n){var c=step.choices[j];h+='<button class="choice" data-j="'+j+'"><span class="k">'+String.fromCharCode(65+n)+'</span><span>'+esc(val(c.t))+'</span></button>';});
-  h += '</div><div id="res"></div></div></section>'+rail()+'</div>';
+  h += '</div><div id="res"></div></div>'+timeline()+'</section>'+rail()+'</div>';
   app.innerHTML = h;
   [].forEach.call(app.querySelectorAll('.choice'),function(b){b.onclick=function(){choose(+b.getAttribute('data-j'));};});
   window.scrollTo(0,0);
