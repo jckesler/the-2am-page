@@ -1,4 +1,4 @@
-# The 2 AM Page
+# The 2AM Page
 
 An interactive incident response tabletop. You're on call when an incident begins. You make the decisions a response team has to make, from the first hour through notification and the review a month later, and see how each one plays out.
 
