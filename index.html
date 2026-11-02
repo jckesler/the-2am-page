@@ -496,7 +496,9 @@ function shortOf(t){ var s = t.split(/[.:;]/)[0]; return s.length>70 ? s.slice(0
 function scene(){
   var step = sc.steps[si];
   var h = '<div class="game"><section class="scene"><div class="scene-head"><span class="clock">'+esc(val(step.clock))+'</span><span class="step">Decision '+(si+1)+' of '+sc.steps.length+'</span></div><div class="scene-body"><h2>'+esc(step.title)+'</h2>'+val(step.text)+'<div class="choices">';
-  step.choices.forEach(function(c,j){h+='<button class="choice" data-j="'+j+'"><span class="k">'+String.fromCharCode(65+j)+'</span><span>'+esc(val(c.t))+'</span></button>';});
+  var order = step.choices.map(function(_,j){return j;});
+  for(var q=order.length-1;q>0;q--){var w=Math.floor(Math.random()*(q+1)),tq=order[q];order[q]=order[w];order[w]=tq;}
+  order.forEach(function(j,n){var c=step.choices[j];h+='<button class="choice" data-j="'+j+'"><span class="k">'+String.fromCharCode(65+n)+'</span><span>'+esc(val(c.t))+'</span></button>';});
   h += '</div><div id="res"></div></div></section>'+rail()+'</div>';
   app.innerHTML = h;
   [].forEach.call(app.querySelectorAll('.choice'),function(b){b.onclick=function(){choose(+b.getAttribute('data-j'));};});
@@ -508,7 +510,7 @@ function choose(j){
   var fx = c.fx||{}; for(var k in fx){ meters[k] = clamp(meters[k] + fx[k]); }
   if(c.set) for(var f in c.set) st[f]=c.set[f];
   picks.push({clock:ck, title:step.title, t:ct, short:shortOf(ct), v:v, r:r, l:c.l, ref:c.ref});
-  [].forEach.call(app.querySelectorAll('.choice'),function(b,i){b.disabled=true; if(i===j) b.classList.add('picked');});
+  [].forEach.call(app.querySelectorAll('.choice'),function(b,i){b.disabled=true; if(+b.getAttribute('data-j')===j) b.classList.add('picked');});
   var lab = v==='best'?'Strong call':v==='ok'?'Partly right':'Costly call';
   var last = si===sc.steps.length-1;
   var res = document.getElementById('res');
