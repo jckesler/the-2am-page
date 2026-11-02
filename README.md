@@ -57,4 +57,4 @@ You're welcome to use and adapt it for teaching, training and other non-commerci
 
 ## About
 
-Written by [Chuck Kesler](https://www.linkedin.com/in/chuckkesler/), a CISO who teaches data security and privacy at NC State University's Poole College of Management. It began as an optional activity for his graduate course.
+Written by [Chuck Kesler](https://www.linkedin.com/in/chuckkesler/), who has more than 15 years of experience as a CISO. He's a member of the IANS faculty, and he gives guest lectures and speaks at industry conferences often.
