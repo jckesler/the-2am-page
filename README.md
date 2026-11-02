@@ -57,4 +57,4 @@ You're welcome to use and adapt it for teaching, training and other non-commerci
 
 ## About
 
-Written by [Chuck Kesler](https://www.linkedin.com/in/chuckkesler/), who has more than 15 years of experience as a CISO. He's a member of the IANS faculty, and he gives guest lectures and speaks at industry conferences often.
+Written by [Chuck Kesler](https://www.linkedin.com/in/chuckkesler/), who has more than 15 years of experience as a CISO. He's a member of the IANS faculty, is a frequent speaker at industry conferences, and also teaches a graduate-level data and security privacy course at NC State University.
