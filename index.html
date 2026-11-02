@@ -27,6 +27,8 @@
   --good:#6fcf97; --good-soft:#18301f; --shadow:none; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0}
+.credit{margin-top:32px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.credit a{color:inherit}
 .wrap{max-width:1120px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.1;text-wrap:balance;margin:0}
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -130,6 +132,7 @@ a{color:var(--aqua)}
     <button class="linkbtn" id="homeBtn" hidden>New scenario</button>
   </header>
   <main id="app"></main>
+  <footer class="credit">&copy; 2026 Chuck Kesler &middot; Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="license noopener" target="_blank">CC BY-NC 4.0</a></footer>
 </div>
 
 <script>
