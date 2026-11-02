@@ -126,7 +126,7 @@ a{color:var(--aqua)}
 <body>
 <div class="wrap">
   <header class="topbar">
-    <div class="brand"><h1>The 2 AM Page</h1><span class="eyebrow">ITAO 511 · Module 11 · Incident response tabletop</span></div>
+    <div class="brand"><h1>The 2 AM Page</h1><span class="eyebrow">Incident response tabletop</span></div>
     <button class="linkbtn" id="homeBtn" hidden>New scenario</button>
   </header>
   <main id="app"></main>
@@ -150,109 +150,109 @@ S.push({
   choices:[
    {t:'Declare an incident, start the call tree: incident commander, the insurer\'s hotline, then outside counsel.', v:'best', fx:{dis:0,exp:-5,tru:0}, set:{declared:1,log:1},
     r:'The plan kicks in. The insurer\'s claims team gives you a panel law firm, which retains a forensics firm the policy will pay for. Someone opens an incident log at 06:14.',
-    l:'Declaring is a decision someone owns, and the insurer often decides which firms it will pay for.', ref:'Part 1, slide 4 · Part 2, slide 2'},
+    l:'Declaring is a decision someone owns, and the insurer often decides which firms it will pay for.', ref:'The plan and the team · Triage and declaring'},
    {t:'Send an all-staff email telling everyone to shut down their computers.', v:'ok', fx:{dis:10,exp:0,tru:0},
     r:'Many people never see it, because the email system is one of the things running slowly. The ones who do see it shut down machines that forensics later wishes it could have examined.',
-    l:'Containment matters, but if the attacker may be in your systems, those systems are a poor way to coordinate.', ref:'Part 1, slide 5'},
+    l:'Containment matters, but if the attacker may be in your systems, those systems are a poor way to coordinate.', ref:'Preparation'},
    {t:'Email the address in the note to find out what they want.', v:'poor', fx:{dis:0,exp:15,tru:0},
     r:'The attackers reply within minutes, now knowing they have your attention. Counsel and the insurer are not happy to learn about it at 09:00.',
-    l:'Never negotiate directly. Contact goes through a specialist, with the insurer and counsel involved.', ref:'Part 2, slide 7'},
+    l:'Never negotiate directly. Contact goes through a specialist, with the insurer and counsel involved.', ref:'Ransomware decisions'},
    {t:'Wait an hour to be sure it\'s real before waking anyone up.', v:'poor', fx:{dis:15,exp:5,tru:-5},
     r:'In that hour, encryption spreads to the scheduling system and two clinic file servers.',
-    l:'Declaring too late is the more common mistake, and it can cost days.', ref:'Part 2, slide 2'}
+    l:'Declaring too late is the more common mistake, and it can cost days.', ref:'Triage and declaring'}
   ]},
  {clock:'Mon 06:40', title:'Where to talk', text:function(){return '<p>The response team is assembling. The hospital runs email and chat through the same identity system the attacker may have used. People are already messaging each other in the usual team chat.</p><p>How does the response team communicate?</p>';},
   choices:[
    {t:'Move to the out-of-band phone bridge and the separate messaging accounts set up last year.', v:'best', fx:{exp:-5}, set:{oob:1},
     r:'The bridge works. Later, forensics confirms the attacker had read access to several mailboxes, including IT\'s.',
-    l:'Assume email and chat may be compromised, and have another channel set up ahead of time.', ref:'Part 1, slide 5'},
+    l:'Assume email and chat may be compromised, and have another channel set up ahead of time.', ref:'Preparation'},
    {t:'Keep using company chat, but avoid naming the ransomware group.', v:'poor', fx:{exp:10,dis:5},
     r:'The attacker reads the team\'s containment plans and disables two accounts before IT can lock them down.',
-    l:'An attacker who can read your planning can stay one step ahead of it.', ref:'Part 1, slide 5'},
+    l:'An attacker who can read your planning can stay one step ahead of it.', ref:'Preparation'},
    {t:'Everyone texts the incident commander on personal phones.', v:'ok', fx:{dis:5},
     r:'It\'s probably out of the attacker\'s reach, but the commander is buried in fifty threads, two decisions get made twice, and counsel later has to collect texts from personal phones.',
-    l:'Out-of-band only helps if it was planned, with a roster and a place to keep the log.', ref:'Part 1, slide 5'}
+    l:'Out-of-band only helps if it was planned, with a roster and a place to keep the log.', ref:'Preparation'}
   ]},
  {clock:'Mon 07:30', title:'Keeping patients safe', text:function(){return '<p>The emergency department can\'t see patient histories, and lab results aren\'t flowing. Clinical leaders ask the incident commander what they should do.</p>';},
   choices:[
    {t:'Activate downtime procedures: paper charting, runners for lab results, and divert ambulances if the ED can\'t cope.', v:'best', fx:{dis:-10,tru:5}, set:{bcp:1},
     r:'It\'s slow and messy, but care continues. The plan was tested in a tabletop last spring, so people know where the paper forms are.',
-    l:'Recovery runs alongside the business continuity plan, which NIST\'s Revision 3 ties to the incident response plan.', ref:'Part 2, slide 6'},
+    l:'Recovery runs alongside the business continuity plan, which NIST\'s Revision 3 ties to the incident response plan.', ref:'Eradication and recovery'},
    {t:'Keep using the systems that still work and hope the rest come back soon.', v:'poor', fx:{dis:15,tru:-10},
     r:'Two systems that "still work" were already infected. A medication order is delayed for hours.',
-    l:'Continuity has to be planned, not improvised from whatever is still running.', ref:'Part 2, slide 6'},
+    l:'Continuity has to be planned, not improvised from whatever is still running.', ref:'Eradication and recovery'},
    {t:'Ask IT for an estimate of when everything will be back before deciding anything.', v:'ok', fx:{dis:10},
     r:'IT can\'t give one yet. The decision gets made at noon instead of at 07:30.',
-    l:'You rarely get a reliable restore estimate in the first hours, so continuity decisions can\'t wait for one.', ref:'Part 2, slide 6'}
+    l:'You rarely get a reliable restore estimate in the first hours, so continuity decisions can\'t wait for one.', ref:'Eradication and recovery'}
   ]},
  {clock:'Mon 10:15', title:'Rebuild now?', text:function(){return '<p>The infrastructure lead has good news: last week\'s backups look intact. She wants to wipe the encrypted servers and start restoring right away.</p>';},
   choices:[
    {t:'First capture forensic images of the affected servers, arranged through counsel\'s forensics firm, and check the backups are clean.', v:'best', fx:{dis:5,exp:-10}, set:{images:1},
     r:'It costs most of a day. The images later show exactly which folders were copied out, and when.',
-    l:'Preserve, then rebuild. Wiping first destroys the evidence of what was taken.', ref:'Part 2, slide 4'},
+    l:'Preserve, then rebuild. Wiping first destroys the evidence of what was taken.', ref:'Preserving evidence'},
    {t:'Wipe and restore immediately, since patients come first.', v:'poor', fx:{dis:-10,exp:15}, set:{noimages:1},
     r:'Systems come back faster. But nobody can now say which patient files the attackers copied, and the attacker\'s way in is still open.',
-    l:'Rebuilding without evidence and without checking the backups can cost you twice.', ref:'Part 2, slides 4 and 6'},
+    l:'Rebuilding without evidence and without checking the backups can cost you twice.', ref:'Preserving evidence · Eradication and recovery'},
    {t:'Image only the most important server, then restore everything else.', v:'ok', fx:{exp:5}, set:{partial:1},
     r:'You keep some evidence, but the copied data turns out to have gone through a server you didn\'t image.',
-    l:'Counsel and forensics should decide what to preserve, not the restore schedule.', ref:'Part 2, slide 4'}
+    l:'Counsel and forensics should decide what to preserve, not the restore schedule.', ref:'Preserving evidence'}
   ]},
  {clock:'Mon 16:30', title:'How they got in', text:function(){return '<p>Forensics finds the way in: a vendor account on the remote-access portal, protected only by a password that showed up in a credentials dump last year. The attacker first logged in nine days ago.</p>';},
   choices:[
    {t:'Disable the portal for all vendors, revoke active sessions, rotate the credentials the attacker touched, and turn on MFA before reopening it.', v:'best', fx:{dis:5,exp:-10}, set:{contained:1},
     r:'The attacker\'s other footholds go quiet. A few vendors complain about the outage; nobody gets back in.',
-    l:'Containment today includes sessions, credentials and third-party access, not only machines.', ref:'Part 2, slide 5'},
+    l:'Containment today includes sessions, credentials and third-party access, not only machines.', ref:'Containment'},
    {t:'Reset that vendor\'s password and move on.', v:'poor', fx:{exp:15,dis:10},
     r:'The attacker had already created two more accounts. They\'re back the next night.',
-    l:'Resetting one password rarely evicts an attacker who has had nine days inside.', ref:'Part 2, slide 5'},
+    l:'Resetting one password rarely evicts an attacker who has had nine days inside.', ref:'Containment'},
    {t:'Rebuild every computer in all three hospitals before doing anything else.', v:'poor', fx:{dis:20},
     r:'It takes weeks, and the portal stays open the whole time.',
-    l:'Rebuilding has its place, but close the door they used first.', ref:'Part 2, slides 5 and 6'}
+    l:'Rebuilding has its place, but close the door they used first.', ref:'Containment · Eradication and recovery'}
   ]},
  {clock:'Tue 09:00', title:'The demand', text:function(st){return '<p>The attackers name their price: $4.5 million in cryptocurrency for a decryption key and a promise to delete the stolen data. '+(st.noimages&&!st.contained?'Your restored servers were reinfected overnight through the attacker\'s still-open way in, so the CEO is under pressure to just pay.':'Restores from clean backups are under way, with IT staff on loan from two neighboring health systems that offered to help, but some clinic systems will take a week.')+'</p><p>The CEO wants a recommendation by noon.</p>';},
   choices:[
    {t:'Bring in the insurer, counsel and a specialist negotiator; check the group against US sanctions; brief the FBI; weigh it against what the backups can restore.', v:'best', fx:{exp:-10}, set:{le:1},
     r:'The sanctions check raises questions about the group, and the backups can restore almost everything. Leadership decides not to pay, with counsel\'s advice on record.',
-    l:'Decide with the insurer and counsel, use a specialist, check sanctions, and engage law enforcement.', ref:'Part 2, slide 7'},
+    l:'Decide with the insurer and counsel, use a specialist, check sanctions, and engage law enforcement.', ref:'Ransomware decisions'},
    {t:'Pay quickly so the stolen data gets deleted before it leaks.', v:'poor', fx:{exp:20,tru:-5},
     r:'You pay. Weeks later, some of the data turns up for sale anyway, and nobody checked whether the group was sanctioned.',
-    l:'Paying doesn\'t guarantee stolen data is deleted, and paying a sanctioned group can itself be illegal.', ref:'Part 2, slide 7'},
+    l:'Paying doesn\'t guarantee stolen data is deleted, and paying a sanctioned group can itself be illegal.', ref:'Ransomware decisions'},
    {t:'Refuse on principle and stop all contact, without checking what the backups can restore.', v:'ok', fx:{dis:10},
     r:'Refusing may well be right, but nobody checked whether "no" was realistic. Two clinics stay down for an extra week.',
-    l:'Whether you can say no depends on your backups, which is why the decision belongs in a tabletop before any incident.', ref:'Part 2, slide 7'}
+    l:'Whether you can say no depends on your backups, which is why the decision belongs in a tabletop before any incident.', ref:'Ransomware decisions'}
   ]},
  {clock:'Thu 14:00', title:'Is it a breach?', text:function(st){return '<p>'+(st.noimages?'Without forensic images, the team can\'t say which records were copied. Counsel says you may have to assume the worst for every patient on those servers.':st.partial?'Forensics can confirm some of what was copied, but not everything that passed through the server you didn\'t image. Counsel says you may have to assume the worst for some patients. What forensics can confirm so far: unencrypted files with names, dates of birth, diagnoses and insurance numbers for at least 120,000 patients.':'Forensics confirms the attackers copied unencrypted files with names, dates of birth, diagnoses and insurance numbers for about 180,000 patients.')+'</p><p>Counsel asks for your read before the privacy officer\'s meeting.</p>';},
   choices:[
    {t:'Treat it as a reportable HIPAA breach: individuals without unreasonable delay and no later than 60 days after discovery, HHS at the same time (500 or more people), and media in each state where more than 500 residents are affected.', v:'best', fx:{exp:-10,tru:5}, set:{reported:1},
     r:'The privacy officer agrees and starts the notification workplan. The clock runs from discovery, not from the final report.',
-    l:'Health data has its own federal rules, and the HHS and media thresholds are two different tests.', ref:'Part 3, slides 2 and 4'},
+    l:'Health data has its own federal rules, and the HHS and media thresholds are two different tests.', ref:'Breach determination · Notification clocks'},
    {t:'It isn\'t reportable: the files were encrypted, and encrypted data is exempt.', v:'poor', fx:{exp:25,tru:-15},
     r:'Counsel stops you. HIPAA\'s safe harbor covers health information your organization encrypted to HHS\'s standard, with the key kept safe. These files were copied in the clear. And under HHS guidance, ransomware encrypting your patients\' data is itself presumed to be a breach unless a risk assessment shows a low probability of compromise.',
-    l:'The encryption question asks whether the stolen data was protected, not whether the attacker encrypted your copy.', ref:'Part 3, slide 2'},
+    l:'The encryption question asks whether the stolen data was protected, not whether the attacker encrypted your copy.', ref:'Breach determination'},
    {t:'Wait for the final forensic report before deciding.', v:'ok', fx:{exp:15},
     r:'The final report takes seven weeks. The 60 days started at discovery, and HHS expects notice without unreasonable delay, so the team is rushing and still has to explain the wait.',
-    l:'HIPAA\'s clock starts at discovery, or when you should have discovered it, not when the report is done.', ref:'Part 3, slide 4'}
+    l:'HIPAA\'s clock starts at discovery, or when you should have discovered it, not when the report is done.', ref:'Notification clocks'}
   ]},
  {clock:'+2 weeks', title:'The letter from OCR', text:function(st){return '<p>The HHS Office for Civil Rights opens an investigation and asks for a long list of evidence: your risk analysis, access controls on the portal, the timeline, and every decision you made, due in about two weeks.</p>'+(st.log?'<p>Your incident log has been running since 06:14 on Monday.</p>':'<p>Nobody kept a formal log; the timeline is scattered across chats, texts and emails.</p>');},
   choices:[
    {t:function(st){return st.log?'Build the response from the incident log, the documented decisions, and counsel\'s file, reviewed by counsel before it goes out.':'Rebuild the timeline from chats, emails and memory, and have counsel review it before it goes out.';}, v:function(st){return st.log?'best':'ok';}, fx:{exp:-10},
     r:function(st){return st.log?'The timeline writes itself. OCR\'s follow-up questions are about MFA on the portal, which you can show is now fixed.':'You reconstruct it, but gaps in the timeline invite more questions.';},
-    l:'Investigations are separate from the notification clocks, and the incident log becomes your evidence.', ref:'Part 3, slide 7 · Part 2, slide 3'},
+    l:'Investigations are separate from the notification clocks, and the incident log becomes your evidence.', ref:'After the notice · Incident command'},
    {t:'Ask OCR for six more months, since the team is exhausted.', v:'poor', fx:{exp:15},
     r:'OCR grants a short extension, not six months, and notes the request.',
-    l:'Expect a short window to produce a lot of evidence.', ref:'Part 3, slide 7'}
+    l:'Expect a short window to produce a lot of evidence.', ref:'After the notice'}
   ]},
  {clock:'+1 month', title:'The review', text:function(){return '<p>Systems are back. It\'s time for the post-incident review. A board member asks who approved a vendor account without MFA, and whether that person still works here.</p>';},
   choices:[
    {t:'Run a blameless review: why did the process allow a password-only vendor account? Assign corrective actions with owners and dates, including MFA on all remote access.', v:'best', fx:{tru:10,exp:-5},
     r:'People talk openly. The review finds three other password-only accounts, and all are fixed within a month.',
-    l:'Ask why the process allowed it, not who to blame, and track the actions to closure.', ref:'Part 2, slide 8'},
+    l:'Ask why the process allowed it, not who to blame, and track the actions to closure.', ref:'Lessons learned'},
    {t:'Find out who approved the account and let them go.', v:'poor', fx:{tru:-5},
     r:'The review becomes a hunt. Nobody mentions the other password-only accounts.',
-    l:'Blame shuts down the information the review needs.', ref:'Part 2, slide 8'},
+    l:'Blame shuts down the information the review needs.', ref:'Lessons learned'},
    {t:'Skip the formal review; everyone already knows what went wrong.', v:'poor', fx:{exp:5},
     r:'Six months later, an auditor asks for the review and the corrective action plan. There isn\'t one.',
-    l:'The review is the step that\'s easiest to skip, and the one that feeds preparation.', ref:'Part 2, slide 8'}
+    l:'The review is the step that\'s easiest to skip, and the one that feeds preparation.', ref:'Lessons learned'}
   ]}
  ],
  real:{title:'The real incidents behind this scenario', items:[
@@ -271,94 +271,94 @@ S.push({
   choices:[
    {t:'Call the incident commander now and declare an incident.', v:'best', set:{declared:1,log:1},
     r:'The commander picks up on the second ring and opens an incident log at 23:24.',
-    l:'Declaring is a decision someone owns. Late is the more common mistake.', ref:'Part 2, slide 2'},
+    l:'Declaring is a decision someone owns. Late is the more common mistake.', ref:'Triage and declaring'},
    {t:'Open a ticket for Monday; the administrator probably got a new phone.', v:'poor', fx:{dis:10,exp:15}, set:{late:1},
     r:'By Monday morning, the attacker has had the whole weekend inside.',
-    l:'Declaring too late can cost days.', ref:'Part 2, slide 2'},
+    l:'Declaring too late can cost days.', ref:'Triage and declaring'},
    {t:'Text the administrator to ask if it was them, and wait for a reply.', v:'ok', fx:{exp:5},
     r:'She replies at 02:00 from another time zone: it wasn\'t her. You\'ve lost three hours.',
-    l:'Checking is reasonable, but not instead of escalating.', ref:'Part 2, slides 1 and 2'}
+    l:'Checking is reasonable, but not instead of escalating.', ref:'Detection · Triage and declaring'}
   ]},
  {clock:function(st){return st.late?'Mon 08:15':'Fri 23:40';}, title:'Shutting the door', text:function(st){return (st.late?'<p>Monday morning, the incident is finally declared. ':'<p>')+'The help desk vendor\'s records show a call on Friday at 22:31 from someone claiming to be the administrator, locked out and needing a password and MFA reset. The agent verified them with her employee ID and the last four digits of her Social Security number, both easy to find in old breach data.</p>';},
   choices:[
    {t:'Revoke all of the account\'s active sessions and tokens, remove the attacker\'s MFA device, reset the credentials, and check what else the account changed.', v:'best', fx:{exp:-10}, set:{contained:1},
     r:'The attacker\'s sessions drop. The account had also created an API key for the loyalty database, and you revoke that too.',
-    l:'A password reset alone doesn\'t end a stolen session. Containment includes sessions, tokens and what the attacker set up.', ref:'Part 2, slide 5'},
+    l:'A password reset alone doesn\'t end a stolen session. Containment includes sessions, tokens and what the attacker set up.', ref:'Containment'},
    {t:'Reset the administrator\'s password.', v:'poor', fx:{exp:15,dis:5},
     r:'The attacker\'s existing session keeps working for hours, and the API key keeps working for days.',
-    l:'On a lot of systems, a stolen session token keeps working after the password changes.', ref:'Part 2, slide 5'},
+    l:'On a lot of systems, a stolen session token keeps working after the password changes.', ref:'Containment'},
    {t:'Shut down the entire corporate network until Monday.', v:'ok', fx:{dis:25},
     r:'It takes down every store\'s card terminals and the website, but the identity provider and the loyalty database are cloud services, so the stolen session and API key keep working.',
-    l:'Containment should be as broad as needed and no broader, and identity-based attacks call for identity-based containment.', ref:'Part 2, slide 5'}
+    l:'Containment should be as broad as needed and no broader, and identity-based attacks call for identity-based containment.', ref:'Containment'}
   ]},
  {clock:function(st){return st.late?'Mon 11:00':'Sat 08:00';}, title:'The help desk', text:function(){return '<p>The help desk is run by an outsourced vendor. Other accounts may have been reset the same way.</p>';},
   choices:[
    {t:'Notify the vendor, suspend its ability to reset privileged accounts, and require call-back verification until the review is done.', v:'best', fx:{exp:-5}, set:{vendor:1},
     r:'The vendor finds one more suspicious reset from Thursday, and you contain it.',
-    l:'When the path in runs through a third party, cut off or restrict that access first.', ref:'Part 2, slide 5'},
+    l:'When the path in runs through a third party, cut off or restrict that access first.', ref:'Containment'},
    {t:'Issue a statement blaming the help desk vendor.', v:'poor', fx:{tru:-5,exp:10},
     r:'Counsel is unhappy: you\'ve made public statements before you know the facts, and the vendor stops cooperating.',
-    l:'Communications go through counsel and an approved process, not in the heat of the first morning.', ref:'Part 2, slide 3 · Part 3, slide 6'},
+    l:'Communications go through counsel and an approved process, not in the heat of the first morning.', ref:'Incident command · What a notice says'},
    {t:'Leave it for now; the vendor will sort out its own process.', v:'poor', fx:{exp:10},
     r:'The Thursday reset goes unnoticed for another week.',
-    l:'Your vendor\'s weakness is your exposure.', ref:'Part 2, slide 5'}
+    l:'Your vendor\'s weakness is your exposure.', ref:'Containment'}
   ]},
  {clock:function(st){return st.late?'Mon 15:00':'Sun 15:00';}, title:'The extortion email', text:function(st){return '<p>The CEO receives an email: the attackers have the loyalty database, including names, addresses and driver\'s license numbers for 2.1 million members. Pay $15 million in five days or it gets published. '+(st.contained?'Because containment worked, systems are running normally.':'The attacker still seems to have some access.')+'</p>';},
   choices:[
    {t:'Engage the insurer and counsel, retain a specialist negotiator, check the group against US sanctions, and brief the FBI.', v:'best', fx:{exp:-10}, set:{le:1},
     r:'The negotiator confirms the group\'s history: it has leaked data after being paid before. The board decides not to pay, on the record.',
-    l:'Decide with the insurer and counsel, use a specialist, check sanctions, and engage law enforcement.', ref:'Part 2, slide 7'},
+    l:'Decide with the insurer and counsel, use a specialist, check sanctions, and engage law enforcement.', ref:'Ransomware decisions'},
    {t:'Have the CEO reply personally to buy time.', v:'poor', fx:{exp:15},
     r:'The reply gets screenshotted and posted on the group\'s leak site.',
-    l:'Don\'t negotiate yourself.', ref:'Part 2, slide 7'},
+    l:'Don\'t negotiate yourself.', ref:'Ransomware decisions'},
    {t:'Pay to make it go away before Monday\'s market open.', v:'poor', fx:{exp:20,tru:-5},
     r:'Paying doesn\'t make the data disappear, or the disclosure obligations.',
-    l:'Paying doesn\'t guarantee the data is deleted, and paying a sanctioned group can itself be illegal.', ref:'Part 2, slide 7'}
+    l:'Paying doesn\'t guarantee the data is deleted, and paying a sanctioned group can itself be illegal.', ref:'Ransomware decisions'}
   ]},
  {clock:'Tue 10:00', title:'Is it a breach?', text:function(){return '<p>Forensics confirms the export: names and driver\'s license numbers, unencrypted, for 2.1 million members in every state. About 410,000 live in North Carolina.</p>';},
   choices:[
    {t:'Reportable. Names plus driver\'s license numbers, unencrypted and in an extortionist\'s hands, are a breach under North Carolina law and most others.', v:'best', fx:{exp:-10}, set:{reported:1},
     r:'Counsel agrees and starts mapping every state\'s requirements.',
-    l:'What data, was it encrypted, and is harm likely: here all three point the same way.', ref:'Part 3, slide 2'},
+    l:'What data, was it encrypted, and is harm likely: here all three point the same way.', ref:'Breach determination'},
    {t:'Not reportable: there\'s no proof anyone has misused it yet.', v:'poor', fx:{exp:20},
     r:'North Carolina\'s exception needs no misuse, no reasonable likelihood of it, and no material risk of harm. Data in an extortionist\'s hands fails that test.',
-    l:'NC\'s risk-of-harm bar is fairly high: all three conditions have to hold.', ref:'Part 3, slide 2'},
+    l:'NC\'s risk-of-harm bar is fairly high: all three conditions have to hold.', ref:'Breach determination'},
    {t:'Only North Carolina residents need notice, since the company is based here.', v:'poor', fx:{exp:15},
     r:'Each state\'s law protects its own residents. Members in other states get notice under their own laws.',
-    l:'One incident can start many clocks, including one per state where affected people live.', ref:'Part 3, slides 3 and 4'}
+    l:'One incident can start many clocks, including one per state where affected people live.', ref:'Who has to be told · Notification clocks'}
   ]},
  {clock:'Wed 16:00', title:'Material?', text:function(){return '<p>Pinecrest is publicly traded. Weighing the expected cost, the extortion threat and customer impact, the disclosure committee concludes on Wednesday afternoon that the incident is material.</p>';},
   choices:[
    {t:'File the Form 8-K within four business days of today\'s determination, by the following Tuesday.', v:'best', fx:{exp:-10}, set:{sec:1},
     r:'The filing goes in Monday, after counsel and the auditors review it.',
-    l:'The SEC clock starts at the materiality determination, made without unreasonable delay. Count business days: Thursday, Friday, Monday, Tuesday.', ref:'Part 3, slide 4'},
+    l:'The SEC clock starts at the materiality determination, made without unreasonable delay. Count business days: Thursday, Friday, Monday, Tuesday.', ref:'Notification clocks'},
    {t:'Hold off on deciding materiality until forensics finishes next month.', v:'poor', fx:{exp:20},
     r:'Counsel warns that the determination has to be made without unreasonable delay. The facts won\'t all be in by then, and they don\'t need to be.',
-    l:'The SEC clock starts at the determination, but you can\'t put off deciding.', ref:'Part 3, slide 4'},
+    l:'The SEC clock starts at the determination, but you can\'t put off deciding.', ref:'Notification clocks'},
    {t:'Treat Thursday as the deadline: four business days from Friday night\'s alert.', v:'ok', fx:{exp:0},
     r:'Filing by Thursday is early, which is allowed, but the reasoning is wrong, and you\'ve squeezed counsel\'s and the auditors\' review into one day for no reason. The real deadline is Tuesday, four business days after Wednesday\'s determination.',
-    l:'The clock runs from the materiality determination, not from discovery.', ref:'Part 3, slide 4'}
+    l:'The clock runs from the materiality determination, not from discovery.', ref:'Notification clocks'}
   ]},
  {clock:'+1 week', title:'The notice', text:function(){return '<p>Counsel has a draft notice to members using the five standard headings. You\'re asked to review it for North Carolina.</p>';},
   choices:[
    {t:'Add what NC requires: a phone number to call, advice to monitor accounts, and contacts for the credit bureaus, the FTC and the NC Attorney General. Notify the AG, and the credit bureaus since you\'re notifying more than 1,000 people at once.', v:'best', fx:{tru:10,exp:-10},
     r:'The notice goes out in plain language, and the AG and credit bureau notices go with it.',
-    l:'Some states require more than the five headings; counsel checks each state\'s list.', ref:'Part 3, slide 6'},
+    l:'Some states require more than the five headings; counsel checks each state\'s list.', ref:'What a notice says'},
    {t:'Rewrite it in legal language to limit liability.', v:'poor', fx:{tru:-15},
     r:'Members can\'t tell what happened or what to do, and call volume triples.',
-    l:'Write for someone skimming on a phone. A vague notice gets ignored.', ref:'Part 3, slide 6'},
+    l:'Write for someone skimming on a phone. A vague notice gets ignored.', ref:'What a notice says'},
    {t:'Send it as is; the five headings cover it.', v:'ok', fx:{exp:10},
     r:'It\'s readable, but it misses North Carolina\'s required contents, and counsel has to send a supplement.',
-    l:'Check a template against each state\'s list before it goes out.', ref:'Part 3, slide 6'}
+    l:'Check a template against each state\'s list before it goes out.', ref:'What a notice says'}
   ]},
  {clock:'+1 month', title:'The review', text:function(){return '<p>Time for the post-incident review. The help desk agent who reset the account is on the call, visibly nervous.</p>';},
   choices:[
    {t:'Run it blameless: why did the process accept employee ID and four SSN digits as verification for an admin reset? Assign owners and dates to fix it.', v:'best', fx:{tru:10},
     r:'The agent explains that callers are often angry executives and the script pushes speed. The fix is call-back verification and MFA resets only with a manager\'s approval.',
-    l:'Ask why the process allowed it, not who to blame.', ref:'Part 2, slide 8'},
+    l:'Ask why the process allowed it, not who to blame.', ref:'Lessons learned'},
    {t:'Ask the vendor to remove the agent from the account.', v:'poor', fx:{tru:-5},
     r:'The process that let it happen is unchanged, and the next agent faces the same script.',
-    l:'Blame shuts down the information the review needs.', ref:'Part 2, slide 8'}
+    l:'Blame shuts down the information the review needs.', ref:'Lessons learned'}
   ]}
  ],
  real:{title:'The real incidents behind this scenario', items:[
@@ -378,70 +378,70 @@ S.push({
   choices:[
    {t:'Declare an incident, revoke the integration\'s tokens and disconnect it now, then start reviewing the CRM\'s logs.', v:'best', fx:{exp:-10}, set:{declared:1,log:1,contained:1},
     r:'The integration is cut off by 09:40. The commander opens an incident log.',
-    l:'If the problem started with a vendor, their access into your systems is often the first thing to shut off.', ref:'Part 2, slide 5'},
+    l:'If the problem started with a vendor, their access into your systems is often the first thing to shut off.', ref:'Containment'},
    {t:'Reply asking whether Larkspur is affected, and wait for the vendor\'s answer.', v:'poor', fx:{exp:15}, set:{late:1},
     r:'The vendor answers on Friday. The tokens stayed live all week.',
-    l:'When your vendor has the incident, you can\'t wait on their timeline to contain your side.', ref:'Part 2, slide 5 · Part 3, slide 5'},
+    l:'When your vendor has the incident, you can\'t wait on their timeline to contain your side.', ref:'Containment · Data you hold for others'},
    {t:'Change the passwords of all CRM users.', v:'ok', fx:{exp:5}, set:{tokens:1},
     r:'It feels thorough, but the attacker wasn\'t using a user\'s password. The integration\'s tokens still work.',
-    l:'Integration tokens are a separate key, and they need to be revoked separately.', ref:'Part 2, slide 5'}
+    l:'Integration tokens are a separate key, and they need to be revoked separately.', ref:'Containment'}
   ]},
  {clock:function(st){return st.late?'Fri 11:30':'Tue 11:30';}, title:'What did they take?', text:function(st){return (st.late?'<p>The vendor\'s answer arrives Friday: yes, you\'re affected. You revoke the integration\'s tokens now. ':st.tokens?'<p>The integration\'s tokens were still live after the password changes, so you revoke them now. ':'<p>')+'The CRM\'s logs show the integration ran unusual bulk exports eight days ago. But on your current plan, detailed query logs are kept for only 14 days.</p>';},
   choices:[
    {t:'Export and preserve all the logs now, under counsel\'s direction, before they age out.', v:'best', fx:{exp:-10}, set:{images:1},
     r:'You capture the full record: which objects were exported, and when.',
-    l:'Preserve evidence first. In SaaS, the logs you need may sit with the vendor and expire.', ref:'Part 2, slide 4 · Part 1, slide 5'},
+    l:'Preserve evidence first. In SaaS, the logs you need may sit with the vendor and expire.', ref:'Preserving evidence · Preparation'},
    {t:'Wait for the forensics firm to start next week.', v:'poor', fx:{exp:15}, set:{noimages:1},
     r:'By the time they start, the earliest days of the attack have aged out of the logs.',
-    l:'You can\'t investigate what you didn\'t keep.', ref:'Part 1, slide 5'}
+    l:'You can\'t investigate what you didn\'t keep.', ref:'Preparation'}
   ]},
  {clock:function(st){return st.late?'Fri 15:00':'Tue 15:00';}, title:'Secrets in support tickets', text:function(){return '<p>The exported data includes support cases, and a search shows some customers pasted API keys and passwords into their tickets while asking for help.</p>';},
   choices:[
    {t:'Find every secret in the exported data, rotate any that are Larkspur\'s, and tell the customers whose secrets were exposed so they can rotate theirs.', v:'best', fx:{tru:5,exp:-10},
     r:'Several customers rotate keys that same evening. One finds an attempted login using its exposed key and blocks it.',
-    l:'The attacker\'s real goal may be the credentials inside the data. Rotate what was exposed.', ref:'Part 2, slide 5'},
+    l:'The attacker\'s real goal may be the credentials inside the data. Rotate what was exposed.', ref:'Containment'},
    {t:'Leave it; those keys belong to the customers, so it\'s their problem.', v:'poor', fx:{tru:-15,exp:10},
     r:'Two customers are compromised through their own exposed keys, and both point back at you.',
-    l:'You hold their data, so the chain of notification runs through you.', ref:'Part 3, slide 5'}
+    l:'You hold their data, so the chain of notification runs through you.', ref:'Data you hold for others'}
   ]},
  {clock:function(st){return st.late?'Mon 10:00':'Wed 10:00';}, title:'Who do you tell, and when?', text:function(){return '<p>Forensics now confirms the export covered every customer account in the CRM. The exported support cases also include files customers uploaded for troubleshooting, containing records about their own employees from the HR platform. Your standard contract promises notice to customers within 48 hours of confirming a security incident affecting their data. About 200 customers are in the EU.</p>';},
   choices:[
    {t:'Notify affected customers now with what you know, and promise updates. For the employee records you process for them, they\'re the controller and have their own clocks.', v:'best', fx:{tru:10,exp:-10}, set:{notified:1},
     r:'Customers appreciate the early notice. Several EU customers start their own 72-hour clocks with their regulators.',
-    l:'As the processor, you tell the controller without undue delay, and your contract may set a tighter deadline still. For the contact records in your own CRM, you\'re the controller, so counsel also weighs your own 72-hour clock.', ref:'Part 3, slides 4 and 5'},
+    l:'As the processor, you tell the controller without undue delay, and your contract may set a tighter deadline still. For the contact records in your own CRM, you\'re the controller, so counsel also weighs your own 72-hour clock.', ref:'Notification clocks · Data you hold for others'},
    {t:'Notify an EU regulator about your customers\' employee data yourself, instead of telling the customers.', v:'ok', fx:{exp:5},
     r:'The regulator notes it, but for that data the controller duty sits with your EU customers, who heard it second-hand.',
-    l:'The processor tells the controller; the controller tells the regulator.', ref:'Part 3, slide 5'},
+    l:'The processor tells the controller; the controller tells the regulator.', ref:'Data you hold for others'},
    {t:'Wait until the investigation is complete so the notice is accurate.', v:'poor', fx:{exp:20,tru:-15},
     r:'You miss the 48-hour contract deadline with hundreds of customers, and their own regulatory clocks start late because of you.',
-    l:'Whichever clock is tightest is the one you work to.', ref:'Part 3, slides 4 and 5'}
+    l:'Whichever clock is tightest is the one you work to.', ref:'Notification clocks · Data you hold for others'}
   ]},
  {clock:function(st){return st.late?'Mon 13:00':'Wed 13:00';}, title:'Reaching everyone', text:function(){return '<p>You need to reach 1,400 customers. The contact list for security notices hasn\'t been updated in two years; many of the named contacts have left their companies.</p>';},
   choices:[
    {t:'Use every channel: in-app banners for customer admins, email to account owners and billing contacts, a status page, and account managers phoning the largest customers.', v:'best', fx:{tru:10},
     r:'You reach almost everyone within a day, and the corrective action list gets a new item: keep security contacts current.',
-    l:'Writing the message is the easier part; reaching everyone is the hard part.', ref:'Part 1, slide 5'},
+    l:'Writing the message is the easier part; reaching everyone is the hard part.', ref:'Preparation'},
    {t:'Email the old security contact list and consider it done.', v:'poor', fx:{tru:-15,exp:10},
     r:'Hundreds of emails bounce. Some customers learn about it from the news.',
-    l:'Current contact data and a way to send at scale are preparation, not something you build on the day.', ref:'Part 1, slide 5'}
+    l:'Current contact data and a way to send at scale are preparation, not something you build on the day.', ref:'Preparation'}
   ]},
  {clock:function(st){return st.late?'Tue 09:00':'Thu 09:00';}, title:'The public statement', text:function(){return '<p>Marketing drafts a blog post: "Larkspur was not breached. A third-party vendor was compromised."</p>';},
   choices:[
    {t:'Rewrite it with counsel: what happened, what data was involved, what you\'ve done, and what customers should do, without blaming the vendor.', v:'best', fx:{tru:10,exp:-5},
     r:'The post is factual and calm. A few customers ask good follow-up questions; most say thanks.',
-    l:'Notices are reviewed by counsel, approved by an executive, and written in plain language.', ref:'Part 3, slide 6'},
+    l:'Notices are reviewed by counsel, approved by an executive, and written in plain language.', ref:'What a notice says'},
    {t:'Publish it as drafted.', v:'poor', fx:{tru:-15},
     r:'Customers whose data was exported read "Larkspur was not breached" and lose trust fast.',
-    l:'Being a downstream victim doesn\'t change who has to be told, or what they need to know.', ref:'Part 3, slides 5 and 6'}
+    l:'Being a downstream victim doesn\'t change who has to be told, or what they need to know.', ref:'Data you hold for others · What a notice says'}
   ]},
  {clock:'+1 month', title:'The review', text:function(){return '<p>Post-incident review. The integration had broad read access to the whole CRM, approved three years ago by someone who has since left.</p>';},
   choices:[
    {t:'Run it blameless: inventory every connected app, scope each to the minimum access it needs, set token expirations, and scan support tickets for secrets going forward.', v:'best', fx:{tru:10,exp:-5},
     r:'The inventory finds 37 connected apps, 11 of which nobody uses. They\'re removed.',
-    l:'Corrective actions with owners and dates, tracked to closure, feed back into preparation.', ref:'Part 2, slide 8'},
+    l:'Corrective actions with owners and dates, tracked to closure, feed back into preparation.', ref:'Lessons learned'},
    {t:'Blame the departed employee who approved the integration.', v:'poor', fx:{tru:-5},
     r:'It\'s easy, since he isn\'t there to answer, and every other connected app stays as it is.',
-    l:'Blame shuts down the information the review needs.', ref:'Part 2, slide 8'}
+    l:'Blame shuts down the information the review needs.', ref:'Lessons learned'}
   ]}
  ],
  real:{title:'The real incident behind this scenario', items:[
@@ -460,7 +460,7 @@ function clamp(n){return Math.max(0,Math.min(100,n));}
 function intro(){
   homeBtn.hidden = true;
   var h = '<section class="intro"><div><span class="eyebrow">Optional · ungraded · about 15 minutes</span><h2>Your phone buzzes. Something is wrong.</h2><p class="lede">You\'re on call when an incident begins. Make the calls a response team makes, from the first hour to the review a month later, and see how each one plays out.</p><div class="row"><button class="primary" id="go">Start a random scenario</button><span class="note">Each play picks one of three companies.</span></div></div>'+
-  '<aside class="rules"><h3>How it works</h3><ul><li>Each scene gives you a situation and two to four choices. There\'s no timer.</li><li>Your choices move three meters: business disruption, legal exposure and customer trust.</li><li>Every decision appears in the decision log on the right, timestamped as it would be in a real response.</li><li>At the end, a debrief explains each decision and points to the lecture slide behind it.</li></ul></aside></section>'+
+  '<aside class="rules"><h3>How it works</h3><ul><li>Each scene gives you a situation and two to four choices. There\'s no timer.</li><li>Your choices move three meters: business disruption, legal exposure and customer trust.</li><li>Every decision appears in the decision log on the right, timestamped as it would be in a real response.</li><li>At the end, a debrief explains each decision and names the incident response topic behind it.</li></ul></aside></section>'+
   '<section class="sec"><h3>Or pick a scenario</h3><div class="cases">';
   S.forEach(function(s,i){h+='<button class="case" data-i="'+i+'"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.name)+'</h3><p>'+esc(s.sector)+'</p><p>'+esc(s.blurb)+'</p></button>';});
   h+='</div><p class="note" style="margin-top:14px">The companies are invented. Each scenario is modeled on real incidents, which the debrief describes.</p></section>';
