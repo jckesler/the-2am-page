@@ -31,6 +31,7 @@ The debrief at the end of each scenario describes what actually happened in thos
 - Every decision is written to a decision log, timestamped as it would be in a real response.
 - Each choice is rated as a strong call, partly right, or a costly call, with a short explanation and the incident response topic behind it.
 - At the end, a debrief walks through every decision you made.
+- Players can download the result as a PDF, with an optional name and a run code. Pasting the run code into "Check a result" on the start screen rebuilds that exact run, so an instructor can check a submitted PDF in a few seconds.
 
 ## Ways to use it
 

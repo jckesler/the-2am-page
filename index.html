@@ -136,8 +136,17 @@ a{color:var(--aqua)}
 .sec>h3{font-size:24px;margin-bottom:8px}
 @media (max-width:860px){.game,.intro{grid-template-columns:minmax(0,1fr)}.rail{position:static}.cases,.grid2{grid-template-columns:minmax(0,1fr)}.intro h2{font-size:34px}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media print{
+  :root,:root[data-theme="dark"]{--bg:#ffffff;--panel:#ffffff;--ink:#1c1a19;--muted:#555;--line:#cfcfcf;color-scheme:light}
+  body{background:#fff;font-size:11pt}
+  .wrap{max-width:none;padding:0}
+  #homeBtn,.end .row,.rail,.credit{display:none!important}
+  .game{display:block}
+  .dl,.stat,.real{break-inside:avoid;page-break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:none!important}
+  @page{margin:14mm}
+}
 </style>
-
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -150,6 +159,249 @@ a{color:var(--aqua)}
   <footer class="credit">&copy; 2026 Chuck Kesler &middot; Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="license noopener" target="_blank">CC BY-NC 4.0</a></footer>
 </div>
 
+<script>
+/* ReportKit 1.0: the PDF report, run code and result check shared by these games.
+   Builds a real PDF in the browser with no library and no network. Nothing is stored or sent. */
+window.ReportKit = (function(){
+"use strict";
+var WR=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,761,556,0,222,556,333,1000,556,556,333,1000,667,333,1000,0,611,0,0,222,222,333,333,350,556,1000,333,1000,500,333,944,0,500,667,278,333,556,556,556,556,260,556,333,737,370,556,584,333,737,333,400,584,333,333,333,556,537,278,333,333,365,556,834,834,834,611,667,667,667,667,667,667,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,500,556,556,556,556,278,278,278,278,556,556,556,556,556,556,556,584,611,556,556,556,556,500,556,500],WB=[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,761,556,0,278,556,500,1000,556,556,333,1000,667,333,1000,0,611,0,0,278,278,500,500,350,556,1000,333,1000,556,333,944,0,500,667,278,333,556,556,556,556,280,556,333,737,370,556,584,333,737,333,400,584,333,333,333,611,556,278,333,333,365,556,834,834,834,611,722,722,722,722,722,722,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,556,556,556,556,556,278,278,278,278,611,611,611,611,611,611,611,584,611,611,611,611,611,556,611,556];
+var CP = {0x20AC:128,0x201A:130,0x0192:131,0x201E:132,0x2026:133,0x2020:134,0x2021:135,0x02C6:136,0x2030:137,0x0160:138,0x2039:139,0x0152:140,0x017D:142,
+  0x2018:145,0x2019:146,0x201C:147,0x201D:148,0x2022:149,0x2013:150,0x2014:151,0x02DC:152,0x2122:153,0x0161:154,0x203A:155,0x0153:156,0x017E:158,0x0178:159};
+var SUBS = [[/→/g,'->'],[/←/g,'<-'],[/≥/g,'>='],[/≤/g,'<='],[/≠/g,'!='],[/ | | /g,' '],[/‑/g,'-']];
+
+function plain(s){ // strip tags and decode the few entities the games use
+  return String(s==null?'':s).replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&middot;/g,'·').replace(/\s+/g,' ').trim();
+}
+function enc(s){
+  s = plain(s); SUBS.forEach(function(r){ s = s.replace(r[0], r[1]); });
+  var out = [];
+  for(var i=0;i<s.length;i++){ var c = s.charCodeAt(i);
+    if(c>=32 && c<127) out.push(c); else if(c>=160 && c<256) out.push(c); else if(CP[c]) out.push(CP[c]); else if(c>=0xD800 && c<0xDC00){ i++; out.push(63); } else out.push(63); }
+  return out;
+}
+function wOf(b, bold){ var t = bold?WB:WR; var s = 0; for(var i=0;i<b.length;i++){ s += (b[i]>=32 ? (t[b[i]-32]||556) : 0); } return s; }
+function wrap(text, bold, size, maxw){
+  var b = enc(text), lim = maxw*1000/size, words = [[]], lines = [], line = [];
+  for(var i=0;i<b.length;i++){ if(b[i]===32) words.push([]); else words[words.length-1].push(b[i]); }
+  words.forEach(function(w){
+    if(!w.length) return;
+    var cand = line.length ? line.concat([32], w) : w.slice();
+    if(wOf(cand,bold) <= lim){ line = cand; return; }
+    if(line.length){ lines.push(line); line = []; }
+    if(wOf(w,bold) <= lim){ line = w.slice(); return; }
+    var cur = []; w.forEach(function(ch){ if(cur.length && wOf(cur.concat([ch]),bold) > lim){ lines.push(cur); cur = []; } cur.push(ch); }); line = cur;
+  });
+  if(line.length || !lines.length) lines.push(line);
+  return lines;
+}
+function pstr(b){ var s = '('; for(var i=0;i<b.length;i++){ var c = b[i];
+  if(c===40||c===41||c===92) s += '\\'+String.fromCharCode(c); else if(c>126) s += '\\'+('00'+c.toString(8)).slice(-3); else s += String.fromCharCode(c); } return s+')'; }
+function rgb(hex){ hex = hex.replace('#',''); return [0,2,4].map(function(i){ return (parseInt(hex.substr(i,2),16)/255).toFixed(3); }).join(' '); }
+
+var COL = {ink:'#1c1a19', muted:'#6a6460', line:'#dcd6d0', red:'#cc0000', aqua:'#00796b', amber:'#a35a00', good:'#2e7d4f', tint:'#f3f1ee', best:'#2e7d4f', ok:'#a35a00', poor:'#cc0000'};
+
+/* doc = {game, kind, company, sector, title, sub, name, code, rebuilt, stats:[{label,value,max,better,note}],
+          sections:[{heading, intro, entries:[{head, tag, grade, chose, lines:[]}], bullets:[], note}], verify, license} */
+function pdf(doc){
+  var PW = 612, PH = 792, M = 54, CW = PW - 2*M, BOT = 64;
+  var pages = [], ops = null, y = 0;
+  function newPage(){ ops = []; pages.push(ops); y = PH - M; }
+  function need(h){ if(y - h < BOT) newPage(); }
+  function txt(x, yy, b, bold, size, color){ ops.push('BT /'+(bold?'F2':'F1')+' '+size+' Tf '+rgb(color||COL.ink)+' rg '+x.toFixed(2)+' '+yy.toFixed(2)+' Td '+pstr(b)+' Tj ET'); }
+  function box(x, yy, w, h, color){ ops.push(rgb(color)+' rg '+x.toFixed(2)+' '+yy.toFixed(2)+' '+w.toFixed(2)+' '+h.toFixed(2)+' re f'); }
+  function para(text, o){ o = o||{}; var size = o.size||10.5, lead = o.lead||size*1.38, x = M+(o.indent||0), w = CW-(o.indent||0)-(o.right||0);
+    var ls = wrap(text, o.bold, size, w);
+    ls.forEach(function(l){ need(lead); y -= lead; txt(x, y+lead*0.28, l, o.bold, size, o.color); });
+    return ls.length*lead; }
+  function measure(text, o){ o = o||{}; var size = o.size||10.5, lead = o.lead||size*1.38; return wrap(text, o.bold, size, CW-(o.indent||0)-(o.right||0)).length*lead; }
+
+  newPage();
+  // header
+  box(M, y-4, CW, 4, COL.red); y -= 22;
+  txt(M, y, enc(doc.game), true, 20, COL.ink);
+  var kb = enc((doc.kind||'Report').toUpperCase()); txt(PW-M-wOf(kb,true)*8.5/1000, y+2, kb, true, 8.5, COL.muted);
+  y -= 8;
+  para(doc.company + (doc.sector ? '  ·  '+doc.sector : ''), {size:11, color:COL.muted});
+  y -= 8;
+  // meta table
+  var meta = [['Name', doc.name ? doc.name : '(not entered)'], ['Saved', doc.saved], ['Run code', doc.code]];
+  if(doc.rebuilt) meta.push(['Note', 'Rebuilt from a run code with "Check a result", not from a live play.']);
+  var mh = meta.length*16 + 14; need(mh);
+  box(M, y-mh, CW, mh, COL.tint);
+  var my = y - 18;
+  meta.forEach(function(r){ txt(M+12, my, enc(r[0]), true, 9.5, COL.muted); var vb = enc(r[1]); txt(M+80, my, vb, r[0]==='Run code', r[0]==='Run code'?11:10, r[0]==='Note'?COL.red:COL.ink); my -= 16; });
+  y -= mh + 18;
+  // outcome
+  para(doc.title, {size:17, bold:true, lead:22});
+  y -= 2; para(doc.sub, {size:10.5, color:COL.ink});
+  y -= 10;
+  // stats
+  if(doc.stats && doc.stats.length){
+    doc.stats.forEach(function(s){
+      need(26);
+      var lb = enc(s.label + (s.note ? '  ('+s.note+')' : '')); txt(M, y-11, lb, false, 9.5, COL.muted);
+      var vb = enc(String(s.value) + (s.max ? ' / '+s.max : '')); txt(M+CW-wOf(vb,true)*10.5/1000, y-11, vb, true, 10.5, COL.ink);
+      if(s.bar !== false){
+        var frac = Math.max(0, Math.min(1, s.value/(s.max||100)));
+        var good = s.better==='low' ? s.value<=40 : s.value>=60, bad = s.better==='low' ? s.value>65 : s.value<40;
+        var c = s.better ? (good?COL.good:bad?COL.red:COL.amber) : COL.ink;
+        box(M, y-19, CW, 4, COL.line); box(M, y-19, CW*frac, 4, c);
+        y -= 27;
+      } else y -= 18;
+    });
+    y -= 6;
+  }
+  // sections
+  (doc.sections||[]).forEach(function(sec){
+    need(40); y -= 6;
+    para(sec.heading, {size:13, bold:true, lead:18});
+    box(M, y-3, CW, 0.8, COL.line); y -= 8;
+    if(sec.intro){ para(sec.intro, {size:10, color:COL.muted}); y -= 4; }
+    (sec.entries||[]).forEach(function(e){
+      var hdr = e.head, tag = e.tag||'', IND = 12;
+      var hH = measure(hdr, {size:10.5, bold:true, indent:IND}), tH = tag ? measure(tag, {size:9, indent:IND}) : 0, cH = e.chose ? measure('You chose: '+e.chose, {size:10, indent:IND}) : 0;
+      var lH = 0; (e.lines||[]).forEach(function(l){ lH += measure(l, {size:9.5, indent:IND}); });
+      need(Math.min(hH + tH + cH + lH + 4, 300));
+      var top = y, pg = pages.length;
+      para(hdr, {size:10.5, bold:true, indent:IND});
+      if(tag) para(tag, {size:9, bold:true, indent:IND, color: COL[e.grade]||COL.muted});
+      if(e.chose) para('You chose: '+e.chose, {size:10, indent:IND});
+      (e.lines||[]).forEach(function(l){ para(l, {size:9.5, indent:IND, color:COL.muted}); });
+      if(pages.length===pg) box(M, y-2, 3, top-y, COL[e.grade]||COL.line);
+      y -= 10;
+    });
+    (sec.bullets||[]).forEach(function(b){
+      need(14); var startY = y; para(b, {size:9.5, indent:12}); txt(M+2, startY-9.5*1.38*0.72, enc('•'), false, 9.5, COL.muted); y -= 3; });
+    if(sec.note){ y -= 2; para(sec.note, {size:9, color:COL.muted}); }
+    y -= 6;
+  });
+  // verify
+  if(doc.verify){ need(50); y -= 6; var vh = measure(doc.verify, {size:9.5, indent:12, right:12}) + 16; need(vh); box(M, y-vh, CW, vh, COL.tint); box(M, y-vh, 3, vh, COL.aqua); y -= 8; para(doc.verify, {size:9.5, indent:12, right:12}); y -= 8; }
+
+  // footers
+  var N = pages.length;
+  pages.forEach(function(p, i){ var cur = ops; ops = p;
+    box(M, 44, CW, 0.6, COL.line);
+    txt(M, 32, enc(doc.game+'  ·  '+doc.code), false, 8, COL.muted);
+    var pb = enc('Page '+(i+1)+' of '+N); txt(PW-M-wOf(pb,false)*8/1000, 32, pb, false, 8, COL.muted);
+    if(doc.license) txt(M, 22, enc(doc.license), false, 7, COL.muted);
+    ops = cur; });
+
+  // assemble
+  var objs = [];
+  objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+  objs[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+  objs[4] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+  var kids = [], n = 5;
+  pages.forEach(function(p){ var stream = p.join('\n'); objs[n+1] = '<< /Length '+stream.length+' >>\nstream\n'+stream+'\nendstream';
+    objs[n] = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents '+(n+1)+' 0 R >>';
+    kids.push(n+' 0 R'); n += 2; });
+  objs[2] = '<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+pages.length+' >>';
+  objs[n] = '<< /Title '+pstr(enc(doc.game+' - '+doc.company))+' /Producer (ReportKit 1.0) /Creator '+pstr(enc(doc.game))+' >>';
+  var out = '%PDF-1.4\n%âãÏÓ\n', offs = [];
+  for(var k=1;k<=n;k++){ offs[k] = out.length; out += k+' 0 obj\n'+objs[k]+'\nendobj\n'; }
+  var xref = out.length;
+  out += 'xref\n0 '+(n+1)+'\n0000000000 65535 f \n';
+  for(k=1;k<=n;k++) out += ('0000000000'+offs[k]).slice(-10)+' 00000 n \n';
+  out += 'trailer\n<< /Size '+(n+1)+' /Root 1 0 R /Info '+n+' 0 R >>\nstartxref\n'+xref+'\n%%EOF\n';
+  var bytes = new Uint8Array(out.length); for(k=0;k<out.length;k++) bytes[k] = out.charCodeAt(k) & 255;
+  return bytes;
+}
+
+function download(bytes, filename){
+  var blob = new Blob([bytes], {type:'application/pdf'});
+  if(window.navigator && window.navigator.msSaveOrOpenBlob){ window.navigator.msSaveOrOpenBlob(blob, filename); return true; }
+  var url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = filename; a.rel = 'noopener'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+  return true;
+}
+
+/* ---------- run codes: PREFIX + base-32 digits + 3-digit check ---------- */
+var A = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+function hash(s){ var h = 0x811c9dc5; for(var i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h; }
+function check(prefix, body){ var h = hash(prefix+':'+body) % 32768; return A[(h>>10)&31]+A[(h>>5)&31]+A[h&31]; }
+function encode(prefix, nums){
+  var body = nums.map(function(v){ if(v<0||v>31||v!==Math.floor(v)) throw new Error('run code value out of range: '+v); return A[v]; }).join('');
+  var all = body + check(prefix, body), parts = [];
+  for(var i=0;i<all.length;i+=4) parts.push(all.slice(i,i+4));
+  return prefix + '-' + parts.join('-');
+}
+function decode(prefix, code){
+  var s = String(code||'').toUpperCase().replace(/[^0-9A-Z]/g,'');
+  if(s.indexOf(prefix) !== 0) return {error:'That code isn\'t from this game. Codes from this game start with '+prefix+'.'};
+  s = s.slice(prefix.length).replace(/O/g,'0').replace(/[IL]/g,'1');
+  if(s.length < 4) return {error:'That code is too short. Check that you copied all of it.'};
+  var body = s.slice(0,-3), ck = s.slice(-3);
+  if(check(prefix, body) !== ck) return {error:'That code doesn\'t check out. It may have a typo, or it may have been changed.'};
+  return {nums: body.split('').map(function(c){ return A.indexOf(c); })};
+}
+
+/* ---------- UI ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function stamp(){ var d = new Date(); return d.toLocaleString(undefined, {year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}); }
+function fileName(game, company){ var d = new Date(), p = function(n){ return (n<10?'0':'')+n; };
+  return (game+' - '+company).replace(/[^A-Za-z0-9 ._-]+/g,'').replace(/\s+/g,' ').trim()+' '+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.pdf'; }
+
+/* The end-screen block. getDoc(name) returns the doc model. */
+function panel(o){
+  var id = 'rk'+Math.floor(Math.random()*1e6);
+  var h = '<div class="rk-panel" id="'+id+'">';
+  if(o.rebuilt) h += '<p class="rk-rebuilt"><b>Rebuilt from run code '+esc(o.code)+'.</b> This is the outcome that code produces. Compare it with the PDF you were given.</p>';
+  h += '<h3>Save your result</h3><div class="rk-row"><label class="rk-name">Your name <span class="note">(optional, printed on the PDF only)</span><input type="text" maxlength="80" autocomplete="name" spellcheck="false"></label>'+
+       '<button class="primary rk-dl" type="button">Download PDF</button><button class="linkbtn rk-pr" type="button">Print</button></div>'+
+       '<p class="rk-code note">Run code: <code>'+esc(o.code)+'</code> <button class="linkbtn rk-cp" type="button">Copy</button> <span class="rk-msg" aria-live="polite"></span></p>'+
+       '<p class="note rk-fine">The PDF is made in your browser. Nothing you type is stored or sent anywhere. The run code records your company and choices, so anyone can paste it into "Check a result" on the start screen and see the same outcome.</p></div>';
+  return {html:h, wire:function(){
+    var root = document.getElementById(id); if(!root) return;
+    var inp = root.querySelector('input'), msg = root.querySelector('.rk-msg');
+    root.querySelector('.rk-dl').onclick = function(){
+      try{ var doc = o.getDoc(plainName(inp.value)); doc.saved = stamp(); doc.code = o.code; doc.rebuilt = !!o.rebuilt;
+        download(pdf(doc), fileName(doc.game, doc.company)); msg.textContent = 'PDF downloaded.'; }
+      catch(e){ msg.textContent = 'The download didn\'t work here. Use Print and choose "Save as PDF".'; if(window.console) console.error(e); }
+    };
+    root.querySelector('.rk-pr').onclick = function(){ var n = plainName(inp.value); document.querySelectorAll('.rk-printname').forEach(function(el){ el.textContent = n ? 'Name: '+n : ''; }); window.print(); };
+    root.querySelector('.rk-cp').onclick = function(){ copy(o.code, msg); };
+  }};
+}
+function plainName(s){ return String(s||'').replace(/[\u0000-\u001f]/g,'').trim().slice(0,80); }
+function copy(text, out){
+  function fallback(){ var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); var ok=false; try{ ok = document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); out.textContent = ok ? 'Copied.' : 'Select the code and copy it.'; }
+  try{ if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(function(){ out.textContent='Copied.'; }, fallback); } else fallback(); }catch(e){ fallback(); }
+}
+/* The start-screen "Check a result" block. onCode(nums) rebuilds the run; return false or throw if the code doesn't fit. */
+function checker(prefix, onCode){
+  var id = 'rkc'+Math.floor(Math.random()*1e6);
+  var h = '<section class="sec rk-check" id="'+id+'"><h3>Check a result</h3><p class="note" style="margin:0 0 8px">Paste a run code from someone\'s PDF to rebuild that exact outcome.</p>'+
+    '<div class="rk-row"><label class="rk-name"><span class="rk-sr">Run code</span><input type="text" placeholder="'+prefix+'-…" autocomplete="off" spellcheck="false" aria-label="Run code"></label><button class="linkbtn rk-go" type="button">Rebuild</button></div><p class="rk-msg note" aria-live="polite"></p></section>';
+  return {html:h, wire:function(){
+    var root = document.getElementById(id); if(!root) return;
+    var inp = root.querySelector('input'), msg = root.querySelector('.rk-msg');
+    function go(){ var r = decode(prefix, inp.value); if(r.error){ msg.textContent = r.error; return; }
+      var ok = false; try{ ok = onCode(r.nums, normalize(prefix, r.nums)) !== false; }catch(e){ ok = false; if(window.console) console.error(e); }
+      if(!ok) msg.textContent = 'That code doesn\'t match any run of this version of the game.'; }
+    root.querySelector('.rk-go').onclick = go;
+    inp.onkeydown = function(e){ if(e.key==='Enter') go(); };
+  }};
+}
+function normalize(prefix, nums){ return encode(prefix, nums); }
+
+var CSS = '.rk-panel{margin-top:18px;padding:16px 18px;border:1px solid var(--line);border-left:4px solid var(--aqua);background:var(--panel);border-radius:6px}'+
+  '.rk-panel h3{margin:0 0 10px;font-size:20px}.rk-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}'+
+  '.rk-name{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;flex:1 1 240px;max-width:360px}'+
+  '.rk-name input{font:inherit;font-weight:400;font-size:16px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--ink);width:100%}'+
+  '.rk-name input:focus-visible{outline:2px solid var(--aqua);outline-offset:1px}'+
+  '.rk-code{margin:12px 0 0}.rk-code code{font-family:var(--f-mono);font-size:15px;font-weight:600;color:var(--ink);letter-spacing:.02em;word-break:break-all}'+
+  '.rk-panel .primary{background:var(--aqua);padding:10px 18px;font-size:15px}.rk-fine{margin:8px 0 0;font-size:13px}.rk-rebuilt{margin:0 0 12px;padding:8px 12px;background:var(--amber-soft);border-radius:4px;font-size:14px}'+
+  '.rk-check{margin-top:28px}.rk-check h3{font-size:20px;margin:0 0 4px}.rk-check .rk-msg{margin:8px 0 0;min-height:1em}.rk-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'+
+  '.rk-printname{display:none}'+
+  '@media print{.rk-panel .rk-row,.rk-panel .rk-cp,.rk-panel .rk-msg,.rk-panel h3,.rk-panel .rk-fine,.rk-check{display:none!important}.rk-panel{border:none;padding:0}.rk-printname{display:block}}';
+(function(){ var st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st); })();
+
+return {pdf:pdf, download:download, encode:encode, decode:decode, panel:panel, checker:checker, plain:plain, stamp:stamp,
+        LICENSE:'© 2026 Chuck Kesler · CC BY-NC 4.0'};
+})();
+</script>
 <script>
 (function(){
 "use strict";
@@ -482,16 +734,40 @@ function intro(){
   '<section class="sec"><h3>Or pick a scenario</h3><div class="cases">';
   S.forEach(function(s,i){h+='<button class="case" data-i="'+i+'"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.name)+'</h3><p>'+esc(s.sector)+'</p><p>'+esc(s.blurb)+'</p></button>';});
   h+='</div><p class="note" style="margin-top:14px">The companies are invented. Each scenario is modeled on real incidents, which the debrief describes.</p></section>';
-  app.innerHTML = h;
+  var ck = ReportKit.checker(CODE, replay); h += ck.html;
+  app.innerHTML = h; ck.wire();
   document.getElementById('go').onclick = function(){start(Math.floor(Math.random()*S.length));};
   [].forEach.call(app.querySelectorAll('.case'),function(b){b.onclick=function(){start(+b.getAttribute('data-i'));};});
   window.scrollTo(0,0);
 }
 
-function start(i){
+function begin(i){
   sc = S[i]; si = 0; st = {}; picks = [];
   meters = {dis:sc.start.dis, exp:sc.start.exp, tru:sc.start.tru};
-  homeBtn.hidden = false; scene();
+  homeBtn.hidden = false;
+}
+function start(i){ begin(i); scene(); }
+
+/* ---------- run code and PDF ---------- */
+var CODE = '2AM1';
+function runCode(){ return ReportKit.encode(CODE, [S.indexOf(sc)].concat(picks.map(function(p){ return p.j; }))); }
+function replay(nums){
+  if(nums[0] >= S.length) return false;
+  var sc0 = S[nums[0]];
+  if(nums.length !== sc0.steps.length + 1) return false;
+  begin(nums[0]);
+  for(var n=1;n<nums.length;n++){ if(nums[n] >= sc.steps[si].choices.length) return false; applyChoice(nums[n]); si++; }
+  end(true); return true;
+}
+function report(name){
+  var g = function(v){ return v==='best'?'Strong call':v==='ok'?'Partly right':'Costly call'; }, o = outcome(), R = sc.real;
+  var real = R.items.slice(); if(R.links) R.links.forEach(function(l){ real.push('Read more: '+l[0]+', '+l[1]); });
+  return {game:'The 2AM Page', kind:'After-action report', company:sc.name, sector:sc.sector, name:name, title:o.title, sub:o.sub, license:ReportKit.LICENSE,
+    stats:[{label:'Strong calls', value:o.best, max:picks.length, bar:false},
+           {label:M.dis, value:meters.dis, better:'low', note:'lower is better'},{label:M.exp, value:meters.exp, better:'low', note:'lower is better'},{label:M.tru, value:meters.tru, better:'high', note:'higher is better'}],
+    sections:[{heading:'Your decisions', entries:picks.map(function(p){ return {head:p.clock+' \u00b7 '+p.title, tag:g(p.v)+' \u00b7 '+p.ref, grade:p.v, chose:p.t, lines:[p.l]}; })},
+              {heading:R.title, bullets:real, note:R.note}],
+    verify:'To check this result, open The 2AM Page, choose "Check a result" on the start screen, and paste the run code. The game rebuilds this exact run, and its outcome should match this page.'};
 }
 
 function meterHTML(k){
@@ -548,11 +824,15 @@ function scene(){
   window.scrollTo(0,0);
 }
 
-function choose(j){
+function applyChoice(j){
   var step = sc.steps[si], c = step.choices[j], v = val(c.v), r = val(c.r), ct = val(c.t), ck = val(step.clock);
   var fx = c.fx||{}; for(var k in fx){ meters[k] = clamp(meters[k] + fx[k]); }
   if(c.set) for(var f in c.set) st[f]=c.set[f];
-  picks.push({clock:ck, title:step.title, t:ct, short:shortOf(ct), v:v, r:r, l:c.l, ref:c.ref});
+  picks.push({clock:ck, title:step.title, t:ct, short:shortOf(ct), v:v, r:r, l:c.l, ref:c.ref, j:j});
+  return {c:c, v:v, r:r};
+}
+function choose(j){
+  var step = sc.steps[si], a = applyChoice(j), c = a.c, v = a.v, r = a.r;
   [].forEach.call(app.querySelectorAll('.choice'),function(b,i){b.disabled=true; if(+b.getAttribute('data-j')===j) b.classList.add('picked');});
   var lab = v==='best'?'Strong call':v==='ok'?'Partly right':'Costly call';
   var last = si===sc.steps.length-1;
@@ -565,14 +845,18 @@ function choose(j){
   document.getElementById('next').onclick = function(){ si++; if(si<sc.steps.length) scene(); else end(); };
 }
 
-function end(){
+function outcome(){
   var pts = picks.reduce(function(a,p){return a+(p.v==='best'?2:p.v==='ok'?1:0);},0), max = picks.length*2, pct = pts/max;
   var title, sub;
   if(pct>=0.8){title='Contained, and credible'; sub='You moved fast, kept the evidence, made the hard calls with the right people, and told the right people on time. It was still a hard week. Good responses usually are.';}
   else if(pct>=0.55){title='Recovered, with some scars'; sub='The organization got through it, but a few early decisions made the later ones harder. Look at which calls cost you, and when.';}
   else {title='Lessons learned the hard way'; sub='Most of what went wrong traces back to something that wasn\'t prepared, or a decision made too late or by the wrong people. That\'s what a tabletop is for: making these mistakes before they cost anything.';}
-  var best = picks.filter(function(p){return p.v==='best';}).length;
-  var h = '<div class="game"><section class="end"><span class="eyebrow">'+esc(sc.name)+' · after-action report</span><h2>'+title+'</h2><p class="lede" style="max-width:62ch">'+sub+'</p>';
+  return {title:title, sub:sub, best:picks.filter(function(p){return p.v==='best';}).length};
+}
+function end(rebuilt){
+  var o = outcome(), title = o.title, sub = o.sub, best = o.best, code = runCode();
+  var pn = ReportKit.panel({code:code, rebuilt:rebuilt, getDoc:report});
+  var h = '<div class="game"><section class="end"><span class="eyebrow">'+esc(sc.name)+' · after-action report</span><p class="rk-printname note" style="margin:4px 0 0"></p><h2>'+title+'</h2><p class="lede" style="max-width:62ch">'+sub+'</p>';
   h += '<div class="grid2"><div class="stat"><div class="n">'+best+' / '+picks.length+'</div><div class="l">strong calls</div></div><div class="stat"><div class="n">'+meters.dis+'</div><div class="l">business disruption (lower is better)</div></div><div class="stat"><div class="n">'+meters.exp+'</div><div class="l">legal exposure (lower is better)</div></div><div class="stat"><div class="n">'+meters.tru+'</div><div class="l">customer trust (higher is better)</div></div></div>';
   h += '<div class="sec"><h3>Your decisions</h3><div class="debrief">';
   picks.forEach(function(p){ var lab = p.v==='best'?'Strong call':p.v==='ok'?'Partly right':'Costly call';
@@ -582,8 +866,8 @@ function end(){
   R.items.forEach(function(x){h+='<li>'+esc(x)+'</li>';});
   h += '</ul><p class="note" style="margin-top:8px">'+esc(R.note)+'</p>';
   if(R.links){ h += '<p class="note">Read more: '; h += R.links.map(function(l){return '<a href="'+l[1]+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>';}).join(' · '); h += '</p>'; }
-  h += '</div><div class="row"><button class="primary" id="again">Play another scenario</button><button class="linkbtn" id="same">Replay this one</button></div></section>'+rail()+'</div>';
-  app.innerHTML = h;
+  h += '</div>'+pn.html+'<div class="row"><button class="primary" id="again">Play another scenario</button><button class="linkbtn" id="same">Replay this one</button></div></section>'+rail()+'</div>';
+  app.innerHTML = h; pn.wire();
   var cur = S.indexOf(sc);
   document.getElementById('again').onclick = function(){ var n; do{ n=Math.floor(Math.random()*S.length);}while(n===cur && S.length>1); start(n); };
   document.getElementById('same').onclick = function(){ start(cur); };
